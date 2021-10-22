@@ -2,10 +2,9 @@ from calculation_results import CalculationResult
 
 
 class ReportGenerator:
-    calculation_result = CalculationResult()
 
     def __init__(self):
-        pass
+        self.calculation_result = CalculationResult()
 
     def show_yearly_report(self):
         self.calculation_result.calculate_yearly_result()

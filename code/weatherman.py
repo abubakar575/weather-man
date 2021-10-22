@@ -1,5 +1,6 @@
 import argparse
 
+from file_handler import FileHandler
 from report_generator import ReportGenerator
 
 
@@ -19,10 +20,11 @@ def get_args_list() -> list:
 
 def perform_args_operation(args_list: list):
     path, yearly, monthly, monthly_chart = args_list
+    FileHandler.path = path
     report_generator = ReportGenerator()
     print('Check Args1', path, yearly, monthly, monthly_chart)
     if yearly is None and monthly is None and monthly_chart is None:
-        print('No cmd is entered')
+        print('No command is entered')
     elif yearly:
         report_generator.show_yearly_report()
     elif monthly:
