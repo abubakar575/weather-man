@@ -5,17 +5,27 @@ class CalculationResult:
 
     def __init__(self):
         self.parser = Parser()
-        self.result_date = []
+        self.result_data_list = []
+        self.result_weather_data = []
 
-    def calculate_yearly_result(self):
+    def get_calculate_yearly_result(self, yearly: str):
         parsed_data_list = self.parser.get_parse_data()
-        # i = 0
-        # for parse_data in parsed_data_list:
-        #     print(f'{i}', parse_data.date, parse_data.highest_temp,
-        #           parse_data.lowest_temp, parse_data.humidity)
-        #     i += 1
+        for parse_data in parsed_data_list:
+            if yearly in parse_data.date:
+                self.result_data_list.append(parse_data)
 
-        print('Yearly result', parsed_data_list)
+        yearly_highest_temp = max(self.result_data_list,
+                                  key=lambda obj: obj.highest_temp)
+
+        yearly_lowest_temp = min(self.result_data_list,
+                                 key=lambda obj: obj.lowest_temp)
+        yearly_humidity = max(self.result_data_list,
+                              key=lambda obj: obj.humidity)
+
+        self.result_weather_data.append(yearly_highest_temp)
+        self.result_weather_data.append(yearly_lowest_temp)
+        self.result_weather_data.append(yearly_humidity)
+        return self.result_weather_data
 
     def calculate_monthly_result(self):
         print('Monthly result')

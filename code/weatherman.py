@@ -22,11 +22,10 @@ def perform_args_operation(args_list: list):
     path, yearly, monthly, monthly_chart = args_list
     FileHandler.path = path
     report_generator = ReportGenerator()
-    print('Check Args1', path, yearly, monthly, monthly_chart)
     if yearly is None and monthly is None and monthly_chart is None:
         print('No command is entered')
     elif yearly:
-        report_generator.show_yearly_report()
+        report_generator.show_yearly_report(yearly)
     elif monthly:
         report_generator.show_monthly_report()
     elif monthly_chart:

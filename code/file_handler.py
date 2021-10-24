@@ -78,6 +78,7 @@ class FileHandler:
         read_raw_data = file.read()
         file_data_values_list = self.file_bytes_into_list(read_raw_data)
         for data in file_data_values_list:
+            data = data.split(',')
             self.files_data_list.append(data)
 
     def read_all_files_data(self, zip_file: zipfile):
