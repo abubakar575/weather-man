@@ -1,3 +1,7 @@
+"""
+This is the main module where I pass the arguments according to year,month,
+chart
+"""
 import argparse
 
 from file_handler import FileHandler
@@ -5,11 +9,20 @@ from report_generator import ReportGenerator
 
 
 def get_args_list() -> list:
+    """
+        Get the arguments list from command
+         ----------
+        none
+
+        Returns
+        -------
+        list : args.path, args.e, args.a, args.c
+    """
     # Initialize parser
     parser = argparse.ArgumentParser()
     # Adding positional argument
     parser.add_argument("path", type=str, help="Enter Path")
-    # Adding optional argument
+    # Adding optional arguments
     parser.add_argument("-e", type=str, help="Enter Year")
     parser.add_argument("-a", type=str, help="Enter year and month")
     parser.add_argument("-c", type=str, help="Enter year and month for "
@@ -19,6 +32,15 @@ def get_args_list() -> list:
 
 
 def perform_args_operation(args_list: list):
+    """
+        Perform the operations according to arguments
+        ----------
+        args_list: list
+
+        Returns
+        -------
+        none
+    """
     path, yearly, monthly, monthly_chart = args_list
     FileHandler.path = path
     report_generator = ReportGenerator()
@@ -36,6 +58,5 @@ def perform_args_operation(args_list: list):
 
 
 if __name__ == '__main__':
-    print('Weather Man File')
     cmd_args_list = get_args_list()
     perform_args_operation(cmd_args_list)

@@ -97,7 +97,7 @@ class FileHandler:
             with zip_file.open(filename) as file:
                 self.read_file_data(file)
 
-    def get_files_data_list(self):
+    def read_files_data_list(self):
         """
         return the list of data which are read from the files
         Parameters
@@ -112,7 +112,6 @@ class FileHandler:
             with zipfile.ZipFile(self.path) as zip_file:
                 self.extract_zipped_files(zip_file.namelist())
                 self.read_all_files_data(zip_file)
-                return self.files_data_list
 
         except zipfile.BadZipFile:
             print('Error: Zip file is corrupted')
