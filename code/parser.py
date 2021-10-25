@@ -17,9 +17,5 @@ class Parser:
                                            int(file_data[7]),
                                            int(file_data[8]))
                 self.parsed_data.append(weather_data)
-                # print(type(file_data[0]), type(file_data[1]),
-                #       type(file_data[3]), type(file_data[7]),
-                #       type(file_data[8]))
-
-        # print(len(self.parsed_data))
+                
         return self.parsed_data

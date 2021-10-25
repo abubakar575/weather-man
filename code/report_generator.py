@@ -1,5 +1,7 @@
 import calendar
 
+from sty import fg
+
 from calculation_results import CalculationResult
 
 
@@ -15,6 +17,7 @@ class ReportGenerator:
         return [month, day]
 
     def show_yearly_report(self, yearly: str):
+        print(fg.green + 'Yearly Report:' + fg.white)
         yearly_result = self.calculation_result.get_calculate_yearly_result(
             yearly)
         month, day = self.get_month_and_day(yearly_result[0].date)
@@ -27,14 +30,46 @@ class ReportGenerator:
         print(f'Humidity: {yearly_result[2].humidity}% on '
               f' {month} {day}')
 
-    def show_monthly_report(self):
-        self.calculation_result.calculate_monthly_result()
+    def show_monthly_report(self, monthly: str):
+        print(fg.green + 'Monthly Report:' + fg.white)
+        monthly_result = self.calculation_result.get_calculate_monthly_result(
+            monthly)
+        print(f'Highest Average: {monthly_result[0]}C ')
+        print(f'Lowest Average: {monthly_result[1]}C ')
+        print(f'Average Mean Humidity: {monthly_result[2]}% ')
 
-    def show_multiple_reports(self):
-        self.calculation_result.calculate_multiple_result()
+    def show_horizontal_bar_chart(self, monthly: str):
+        print(fg.green + 'Monthly Single Horizontal Bar Chart:' + fg.white)
+        year, month = monthly.split('/')
+        print(calendar.month_name[int(month)], year)
+        monthly_horizontal_bar_result = self.calculation_result \
+            .get_calculate_horizontal_results(monthly)
+        i = 0
+        for data in monthly_horizontal_bar_result:
+            print(f' {fg.white} {i + 1:02d} : {fg.blue} '
+                  f' {"+" * data.lowest_temp}'
+                  f' {fg.red}  {"+" * data.highest_temp}'
+                  f' {fg.blue} {data.lowest_temp}C -{fg.red}'
+                  f' {data.highest_temp}C')
+            i += 1
 
-    def show_horizontal_charts(self):
-        self.calculation_result.calculate_horizontal_results()
+    def show_horizontal_bar_charts(self, monthly: str):
+        print(fg.green + 'Monthly Multiple Horizontal Bar Charts:' + fg.white)
+        year, month = monthly.split('/')
+        print(calendar.month_name[int(month)], year)
+        monthly_horizontal_bar_result = self.calculation_result \
+            .get_calculate_horizontal_results(monthly)
+        i = 0
+        for data in monthly_horizontal_bar_result:
+            print(fg.red + f'{i + 1:02d} : {"+" * data.highest_temp} '
+                           f'{data.highest_temp}C')
+            print(fg.blue + f'{i + 1:02d} : {"+" * data.lowest_temp}'
+                            f' {data.lowest_temp}C')
+            i += 1
 
-    def show_horizontal_chart(self):
-        self.calculation_result.calculate_horizontal_result()
+    def show_multiple_reports(self, yearly: str, monthly: str,
+                              monthly_chart: str):
+        print(yearly, monthly, monthly_chart)
+        self.show_horizontal_bar_charts(monthly_chart)
+        self.show_yearly_report(yearly)
+        self.show_monthly_report(monthly)

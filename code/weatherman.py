@@ -24,15 +24,15 @@ def perform_args_operation(args_list: list):
     report_generator = ReportGenerator()
     if yearly is None and monthly is None and monthly_chart is None:
         print('No command is entered')
-    elif yearly:
+    elif yearly and monthly is None and monthly_chart is None:
         report_generator.show_yearly_report(yearly)
-    elif monthly:
-        report_generator.show_monthly_report()
-    elif monthly_chart:
-        report_generator.show_horizontal_charts()
-        report_generator.show_horizontal_chart()
+    elif monthly and yearly is None and monthly_chart is None:
+        report_generator.show_monthly_report(monthly)
+    elif monthly_chart and yearly is None and monthly is None:
+        report_generator.show_horizontal_bar_charts(monthly_chart)
+        report_generator.show_horizontal_bar_chart(monthly_chart)
     else:
-        report_generator.show_multiple_reports()
+        report_generator.show_multiple_reports(yearly, monthly, monthly_chart)
 
 
 if __name__ == '__main__':
