@@ -25,6 +25,7 @@ class CalculationResult:
             object.
         """
         self.parser = Parser()
+        self.parser.parse_data()
         self.result_data_list = []
 
     def get_calculate_yearly_result(self, yearly: str) -> list:
@@ -37,20 +38,23 @@ class CalculationResult:
             -------
             list:  yearly_highest_temp, yearly_lowest_temp, yearly_humidity
         """
-        parsed_data_list = self.parser.get_parse_data()
-        for parse_data in parsed_data_list:
-            if yearly in parse_data.date:
-                self.result_data_list.append(parse_data)
+        if self.parser.is_parse_data_avail:
+            self.result_data_list = [parse_data for parse_data in
+                                     self.parser.parsed_data_list
+                                     if yearly in parse_data.date]
+            # Sort the data according to month from year
+            self.result_data_list.sort(key=lambda obj: int(obj.date[5]))
 
-        self.result_data_list.sort(key=lambda obj: int(obj.date[5]))
-
-        yearly_highest_temp = max(self.result_data_list,
-                                  key=lambda obj: obj.highest_temp)
-        yearly_lowest_temp = min(self.result_data_list,
-                                 key=lambda obj: obj.lowest_temp)
-        yearly_humidity = max(self.result_data_list,
-                              key=lambda obj: obj.humidity)
-        return [yearly_highest_temp, yearly_lowest_temp, yearly_humidity]
+            yearly_highest_temp = max(self.result_data_list,
+                                      key=lambda obj: obj.highest_temp)
+            yearly_lowest_temp = min(self.result_data_list,
+                                     key=lambda obj: obj.lowest_temp)
+            yearly_humidity = max(self.result_data_list,
+                                  key=lambda obj: obj.humidity)
+            self.result_data_list = []
+            return [yearly_highest_temp, yearly_lowest_temp, yearly_humidity]
+        else:
+            print("Parsed data is not available")
 
     def get_calculate_monthly_result(self, monthly: str) -> list:
         """
@@ -62,29 +66,34 @@ class CalculationResult:
             -------
             list:  avg_highest_temp, avg_lowest_temp, avg_mean_humidity
         """
-        year, month = monthly.split('/')
-        parsed_data_list = self.parser.get_parse_data()
-        for parse_data in parsed_data_list:
-            if month in parse_data.date[5] and year in parse_data.date:
-                self.result_data_list.append(parse_data)
 
-        highest_temp_list = [result_data.highest_temp for result_data in
-                             self.result_data_list]
-        avg_highest_temp = sum(highest_temp_list) / len(
-            highest_temp_list)
-        lowest_temp_list = [result_data.lowest_temp for result_data in
-                            self.result_data_list]
-        avg_lowest_temp = sum(lowest_temp_list) / len(
-            lowest_temp_list)
+        if self.parser.is_parse_data_avail:
+            year, month = monthly.split('/')
+            self.result_data_list = [parse_data for parse_data in
+                                     self.parser.parsed_data_list
+                                     if month in parse_data.date[5]
+                                     and year in parse_data.date]
 
-        mean_humidity_list = [result_data.mean_humidity for result_data in
-                              self.result_data_list]
-        avg_mean_humidity = sum(mean_humidity_list) / len(
-            mean_humidity_list)
-        return [math.ceil(avg_highest_temp), math.ceil(avg_lowest_temp),
-                math.ceil(avg_mean_humidity)]
+            highest_temp_list = [result_data.highest_temp for result_data in
+                                 self.result_data_list]
+            avg_highest_temp = sum(highest_temp_list) / len(
+                highest_temp_list)
+            lowest_temp_list = [result_data.lowest_temp for result_data in
+                                self.result_data_list]
+            avg_lowest_temp = sum(lowest_temp_list) / len(
+                lowest_temp_list)
 
-    def get_calculate_horizontal_results(self, monthly: str) -> list:
+            mean_humidity_list = [result_data.mean_humidity for result_data in
+                                  self.result_data_list]
+            avg_mean_humidity = sum(mean_humidity_list) / len(
+                mean_humidity_list)
+            self.result_data_list = []
+            return [math.ceil(avg_highest_temp), math.ceil(avg_lowest_temp),
+                    math.ceil(avg_mean_humidity)]
+        else:
+            print("Parsed data is not available")
+
+    def calculate_horizontal_results(self, monthly: str) -> list:
         """
             Calculate the multiple horizontal_results from the parsed data
             according to month
@@ -95,22 +104,12 @@ class CalculationResult:
             -------
             list : result_data_list
         """
-        year, month = monthly.split('/')
-        parsed_data_list = self.parser.get_parse_data()
-        for parse_data in parsed_data_list:
-            if month in parse_data.date[5] and year in parse_data.date:
-                self.result_data_list.append(parse_data)
-        return self.result_data_list
-
-    def get_calculate_horizontal_result(self) -> list:
-        """
-            Calculate the single horizontal_result from the parsed data
-            according to month
-            ----------
-            none
-
-            Returns
-            -------
-            list : result_data_list
-        """
-        return self.result_data_list
+        if self.parser.is_parse_data_avail:
+            year, month = monthly.split('/')
+            self.result_data_list = [parse_data for parse_data in
+                                     self.parser.parsed_data_list
+                                     if month in parse_data.date[5]
+                                     and year in parse_data.date]
+            return self.result_data_list
+        else:
+            print("Parsed data is not available")

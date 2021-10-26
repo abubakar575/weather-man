@@ -27,6 +27,7 @@ class FileHandler:
         """
         self.extracted_files_list = []
         self.files_data_list = []
+        self.is_files_data_avail = False
 
     def extract_zipped_files(self, zipped_files_list: list):
         """
@@ -46,7 +47,7 @@ class FileHandler:
                                      not str(filename).startswith('__MACOSX/')
                                      and str(filename).endswith('txt')]
 
-    def file_bytes_into_list(self, file_data: bytes):
+    def file_bytes_into_list(self, file_data: bytes) -> list:
         """
          Take the bytes input data and convert into list and remove the
          bytes variable from list like b'
@@ -112,6 +113,7 @@ class FileHandler:
             with zipfile.ZipFile(self.path) as zip_file:
                 self.extract_zipped_files(zip_file.namelist())
                 self.read_all_files_data(zip_file)
+                self.is_files_data_avail = True
 
         except zipfile.BadZipFile:
             print('Error: Zip file is corrupted')

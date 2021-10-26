@@ -82,7 +82,7 @@ class ReportGenerator:
 
     def show_horizontal_bar_chart(self, monthly: str):
         """
-            Show the multiple line monthly horizontal_bar_chart according to
+            Show the single line monthly horizontal_bar_chart according to
             string
             ----------
             monthly: str
@@ -94,8 +94,8 @@ class ReportGenerator:
         print(fg.green + 'Monthly Single Horizontal Bar Chart:' + fg.white)
         year, month = monthly.split('/')
         print(calendar.month_name[int(month)], year)
-        monthly_horizontal_bar_result = self.calculation_result \
-            .get_calculate_horizontal_result()
+        monthly_horizontal_bar_result = self.calculation_result. \
+            result_data_list
         i = 0
         for data in monthly_horizontal_bar_result:
             print(f' {fg.white} {i + 1:02d} : {fg.blue} '
@@ -107,7 +107,7 @@ class ReportGenerator:
 
     def show_horizontal_bar_charts(self, monthly: str):
         """
-            Show the single line monthly horizontal_bar_chart according to
+            Show the multiple line monthly horizontal_bar_chart according to
             string
             ----------
             monthly: str
@@ -120,7 +120,7 @@ class ReportGenerator:
         year, month = monthly.split('/')
         print(calendar.month_name[int(month)], year)
         monthly_horizontal_bar_result = self.calculation_result \
-            .get_calculate_horizontal_results(monthly)
+            .calculate_horizontal_results(monthly)
         i = 0
         for data in monthly_horizontal_bar_result:
             print(fg.red + f'{i + 1:02d} : {"+" * data.highest_temp} '
@@ -140,7 +140,7 @@ class ReportGenerator:
             -------
             none
         """
-        self.show_horizontal_bar_charts(monthly_chart)
-        self.show_horizontal_bar_chart(monthly_chart)
         self.show_yearly_report(yearly)
         self.show_monthly_report(monthly)
+        self.show_horizontal_bar_charts(monthly_chart)
+        self.show_horizontal_bar_chart(monthly_chart)

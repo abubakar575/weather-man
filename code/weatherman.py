@@ -11,7 +11,7 @@ from report_generator import ReportGenerator
 def get_args_list() -> list:
     """
         Get the arguments list from command
-         ----------
+        ----------
         none
 
         Returns
