@@ -1,14 +1,16 @@
 """
-This is the main module where I pass the arguments according to year,month,
-chart
+This is the main module where I pass the arguments according to year,month,chart.
 """
 import argparse
+import os
 
+from calculation_results import CalculationResult
 from file_handler import FileHandler
+from parser import Parser
 from report_generator import ReportGenerator
 
 
-def get_args_list() -> list:
+def get_command_arguments_values() -> tuple:
     """
         Get the arguments list from command
         ----------
@@ -16,7 +18,7 @@ def get_args_list() -> list:
 
         Returns
         -------
-        list : args.path, args.e, args.a, args.c
+        tuple : args.path, args.e, args.a,  args.c
     """
     # Initialize parser
     parser = argparse.ArgumentParser()
@@ -25,38 +27,63 @@ def get_args_list() -> list:
     # Adding optional arguments
     parser.add_argument("-e", type=str, help="Enter Year")
     parser.add_argument("-a", type=str, help="Enter year and month")
-    parser.add_argument("-c", type=str, help="Enter year and month for "
-                                             "horizontal chart")
+    parser.add_argument("-c", type=str, help="Enter year and month for horizontal chart")
     args = parser.parse_args()
-    return [args.path, args.e, args.a, args.c]
+    return args.path, args.e, args.a, args.c
 
 
-def perform_args_operation(args_list: list):
+def perform_args_operation(arg_path: str, arg_year: str, arg_month: str, arg_monthly_chart: str):
     """
         Perform the operations according to arguments
         ----------
-        args_list: list
+        argument_path: str
+        argument_year: str
+        argument_month: str
+        argument_monthly_chart: str
 
         Returns
         -------
         none
     """
-    path, yearly, monthly, monthly_chart = args_list
-    FileHandler.path = path
-    report_generator = ReportGenerator()
-    if yearly is None and monthly is None and monthly_chart is None:
-        print('No command is entered')
-    elif yearly and monthly is None and monthly_chart is None:
-        report_generator.show_yearly_report(yearly)
-    elif monthly and yearly is None and monthly_chart is None:
-        report_generator.show_monthly_report(monthly)
-    elif monthly_chart and yearly is None and monthly is None:
-        report_generator.show_horizontal_bar_charts(monthly_chart)
-        report_generator.show_horizontal_bar_chart(monthly_chart)
+    if os.path.exists(arg_path):
+        files_data_list = FileHandler.get_files_data_list(arg_path)
+        parsed_data_list = Parser.parse_data(files_data_list)
+
+        if arg_year is None and arg_month is None and arg_monthly_chart is None:
+            print('No command is entered')
+
+        elif arg_year and arg_month is None and arg_monthly_chart is None:
+            yearly_highest_temp, yearly_lowest_temp, yearly_humidity = CalculationResult.calculate_yearly_result(
+                arg_year,
+                parsed_data_list)
+            ReportGenerator.generate_yearly_report(yearly_highest_temp, yearly_lowest_temp, yearly_humidity)
+
+        elif arg_month and arg_year is None and arg_monthly_chart is None:
+            avg_highest_temp, avg_lowest_temp, avg_mean_humidity = CalculationResult.get_calculate_monthly_result(
+                arg_month,
+                parsed_data_list)
+            ReportGenerator.generate_monthly_report(avg_highest_temp, avg_lowest_temp, avg_mean_humidity)
+
+        elif arg_monthly_chart and arg_year is None and arg_month is None:
+            monthly_data_list = CalculationResult.get_monthly_data_list(arg_monthly_chart, parsed_data_list)
+            ReportGenerator.generate_multiple_monthly_chart(monthly_data_list)
+            ReportGenerator.generate_combine_monthly_chart(monthly_data_list)
+
+        else:
+            yearly_highest_temp, yearly_lowest_temp, yearly_humidity = CalculationResult.calculate_yearly_result(
+                arg_year,
+                parsed_data_list)
+            yearly_result = yearly_highest_temp, yearly_lowest_temp, yearly_humidity
+            avg_highest_temp, avg_lowest_temp, avg_mean_humidity = CalculationResult.get_calculate_monthly_result(
+                arg_month,
+                parsed_data_list)
+            monthly_result = avg_highest_temp, avg_lowest_temp, avg_mean_humidity
+            monthly_data_list = CalculationResult.get_monthly_data_list(arg_monthly_chart, parsed_data_list)
+            ReportGenerator.generate_multiple_reports(yearly_result, monthly_result, monthly_data_list)
     else:
-        report_generator.show_multiple_reports(yearly, monthly, monthly_chart)
+        print('Path does not exist')
 
 
 if __name__ == '__main__':
-    cmd_args_list = get_args_list()
-    perform_args_operation(cmd_args_list)
+    path_arg, year_arg, month_arg, monthly_chart_arg = get_command_arguments_values()
+    perform_args_operation(path_arg, year_arg, month_arg, monthly_chart_arg)

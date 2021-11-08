@@ -6,141 +6,109 @@ import calendar
 
 from sty import fg
 
-from calculation_results import CalculationResult
-
 
 class ReportGenerator:
     """
         A class to represent a CalculationResult.
-        ...
-        Attributes
-        ----------
-        calculation_result : object
     """
 
-    def __init__(self):
+    @staticmethod
+    def generate_yearly_report(yearly_highest_temp: object, yearly_lowest_temp: object, yearly_humidity: object):
         """
-            Constructs all the necessary attributes for the CalculationResult
-            object.
-        """
-        self.calculation_result = CalculationResult()
-
-    def get_month_and_day(self, date: str) -> list:
-        """
-            Get the month name and day from data str
+            Generate the yearly report 
             ----------
-            date: str
-
-            Returns
-            -------
-            list:  month, day
-        """
-        date = date.split('-')
-        month = calendar.month_name[int(date[1])]
-        day = date[2]
-        return [month, day]
-
-    def show_yearly_report(self, yearly: str):
-        """
-            Show the yearly report according to string
-            ----------
-            yearly: str
+            yearly_highest_temp: object
+            yearly_lowest_temp: object
+            yearly_humidity: object
 
             Returns
             -------
             none
         """
-        print(fg.green + 'Yearly Report:' + fg.white)
-        yearly_result = self.calculation_result.get_calculate_yearly_result(
-            yearly)
-        month, day = self.get_month_and_day(yearly_result[0].date)
-        print(f'Highest: {yearly_result[0].highest_temp}C on'
-              f' {month} {day}')
-        month, day = self.get_month_and_day(yearly_result[1].date)
-        print(f'Lowest: {yearly_result[1].lowest_temp}C on'
-              f' {month} {day}')
-        month, day = self.get_month_and_day(yearly_result[2].date)
-        print(f'Humidity: {yearly_result[2].humidity}% on '
-              f' {month} {day}')
 
-    def show_monthly_report(self, monthly: str):
+        print(fg.green + 'Yearly Report:' + fg.white)
+        print(f'Highest: {yearly_highest_temp.highest_temp}C on '
+              f'{yearly_highest_temp.date.day} '
+              f'{calendar.month_name[yearly_highest_temp.date.month]}')
+        print(f'Lowest: {yearly_lowest_temp.lowest_temp}C on '
+              f'{yearly_lowest_temp.date.day} '
+              f'{calendar.month_name[yearly_lowest_temp.date.month]}')
+        print(f'Humidity: {yearly_humidity.humidity}% on '
+              f'{yearly_humidity.date.month} '
+              f'{calendar.month_name[yearly_humidity.date.month]}')
+
+    @staticmethod
+    def generate_monthly_report(avg_highest_temp: int, avg_lowest_temp: int, avg_mean_humidity: int):
         """
-            Show the monthly report according to string
+            Generate the monthly report
             ----------
-            monthly: str
+            avg_highest_temp: int
+            avg_lowest_temp: int
+            avg_mean_humidity: int
 
             Returns
             -------
             none
         """
         print(fg.green + 'Monthly Report:' + fg.white)
-        monthly_result = self.calculation_result.get_calculate_monthly_result(
-            monthly)
-        print(f'Highest Average: {monthly_result[0]}C ')
-        print(f'Lowest Average: {monthly_result[1]}C ')
-        print(f'Average Mean Humidity: {monthly_result[2]}% ')
+        print(f'Highest Average: {avg_highest_temp}C ')
+        print(f'Lowest Average: {avg_lowest_temp}C ')
+        print(f'Average Mean Humidity: {avg_mean_humidity}%')
 
-    def show_horizontal_bar_chart(self, monthly: str):
-        """
-            Show the single line monthly horizontal_bar_chart according to
-            string
+    @staticmethod
+    def generate_combine_monthly_chart(monthly_data_list: list):
+        """¬
+            Generate the single line monthly horizontal_bar_chart according to temperature value
             ----------
-            monthly: str
+            monthly_data_list: list
 
             Returns
             -------
             none
         """
         print(fg.green + 'Monthly Single Horizontal Bar Chart:' + fg.white)
-        year, month = monthly.split('/')
-        print(calendar.month_name[int(month)], year)
-        monthly_horizontal_bar_result = self.calculation_result. \
-            result_data_list
-        i = 0
-        for data in monthly_horizontal_bar_result:
-            print(f' {fg.white} {i + 1:02d} : {fg.blue} '
+        print(f' Date: {calendar.month_name[monthly_data_list[0].date.month]} {monthly_data_list[0].date.year}')
+        for index, data in enumerate(monthly_data_list, 0):
+            print(f' {fg.white} {index + 1:02d} : {fg.blue} '
                   f' {"+" * data.lowest_temp}'
                   f' {fg.red}  {"+" * data.highest_temp}'
                   f' {fg.blue} {data.lowest_temp}C -{fg.red}'
                   f' {data.highest_temp}C')
-            i += 1
 
-    def show_horizontal_bar_charts(self, monthly: str):
+    @staticmethod
+    def generate_multiple_monthly_chart(monthly_data_list: list):
         """
-            Show the multiple line monthly horizontal_bar_chart according to
-            string
+            Generate the multiple line monthly horizontal_bar_chart according to temperature value
             ----------
-            monthly: str
+            monthly_data_list: list
 
             Returns
             -------
             none
         """
         print(fg.green + 'Monthly Multiple Horizontal Bar Charts:' + fg.white)
-        year, month = monthly.split('/')
-        print(calendar.month_name[int(month)], year)
-        monthly_horizontal_bar_result = self.calculation_result \
-            .calculate_horizontal_results(monthly)
-        i = 0
-        for data in monthly_horizontal_bar_result:
-            print(fg.red + f'{i + 1:02d} : {"+" * data.highest_temp} '
-                           f'{data.highest_temp}C')
-            print(fg.blue + f'{i + 1:02d} : {"+" * data.lowest_temp}'
-                            f' {data.lowest_temp}C')
-            i += 1
+        print(f' Date: {calendar.month_name[monthly_data_list[0].date.month]} {monthly_data_list[0].date.year}')
+        for index, data in enumerate(monthly_data_list, 0):
+            print(fg.red + f'{index + 1:02d} : {"+" * data.highest_temp} 'f'{data.highest_temp}C')
+            print(fg.blue + f'{index + 1:02d} : {"+" * data.lowest_temp} 'f'{data.lowest_temp}C')
 
-    def show_multiple_reports(self, yearly: str, monthly: str,
-                              monthly_chart: str):
+    @staticmethod
+    def generate_multiple_reports(yearly_result: tuple, monthly_result: tuple, monthly_data_list: list):
+
         """
-            Show the multiple report of weather data
+            Generate the multiple report of weather data
             ----------
-            yearly: str, monthly: str,monthly_chart: str
+            yearly_result: tuple,
+            monthly_result: tuple
+            monthly_data_list: list
 
             Returns
             -------
             none
         """
-        self.show_yearly_report(yearly)
-        self.show_monthly_report(monthly)
-        self.show_horizontal_bar_charts(monthly_chart)
-        self.show_horizontal_bar_chart(monthly_chart)
+        yearly_highest_temp, yearly_lowest_temp, yearly_humidity = yearly_result
+        ReportGenerator.generate_yearly_report(yearly_highest_temp, yearly_lowest_temp, yearly_humidity)
+        avg_highest_temp, avg_lowest_temp, avg_mean_humidity = monthly_result
+        ReportGenerator.generate_monthly_report(avg_highest_temp, avg_lowest_temp, avg_mean_humidity)
+        ReportGenerator.generate_multiple_monthly_chart(monthly_data_list)
+        ReportGenerator.generate_combine_monthly_chart(monthly_data_list)

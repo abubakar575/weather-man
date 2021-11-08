@@ -2,6 +2,7 @@
 This module is used in parser class when we get the raw_file data then this
 module helps to map the readings data structure with correct data types
 """
+from datetime import date
 
 
 class WeatherData:
@@ -10,7 +11,7 @@ class WeatherData:
     ...
     Attributes
     ----------
-    date : str
+    date: datetime
         date of the weather
     highest_temp : int
         highest temperature of the weather
@@ -23,8 +24,7 @@ class WeatherData:
 
     """
 
-    def __init__(self, date: str, highest_temp: int, lowest_temp: int,
-                 humidity: int, mean_humidity: int):
+    def __init__(self, date: date, highest_temp: int, lowest_temp: int, humidity: int, mean_humidity: int):
         """
         Constructs all the necessary attributes for the weather object.
         """
