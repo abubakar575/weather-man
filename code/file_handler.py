@@ -11,22 +11,22 @@ class FileHandler:
     """
 
     @staticmethod
-    def extract_zipped_files(zipped_files_list: list) -> list:
+    def extract_zipped_files(zipped_files: list) -> list:
         """
-        Extracts all the files from zip folder and placed into the extracted_files_list
+        Extracts all the files from zip folder and placed into the extracted_files
 
         Parameters
         ----------
-        zipped_files_list : list
+        zipped_files : list
 
         Returns
         -------
-        list : extracted_files_list
+        list : extracted_files
         """
-        extracted_files_list = [filename for filename in zipped_files_list if
-                                not str(filename).startswith('__MACOSX/')
-                                and str(filename).endswith('txt')]
-        return extracted_files_list
+        extracted_files = [filename for filename in zipped_files if
+                           not str(filename).startswith('__MACOSX/')
+                           and str(filename).endswith('txt')]
+        return extracted_files
 
     @staticmethod
     def file_bytes_into_list(file_data: bytes) -> list:
@@ -38,12 +38,12 @@ class FileHandler:
 
          Returns
          -------
-         list : file_data_values_list
+         list : file_data_values
          """
-        file_data_values_list = str(file_data).split('\\n')
-        file_data_values_list[0] = file_data_values_list[0].replace('b\'', '')
-        file_data_values_list.pop()
-        return file_data_values_list
+        file_data_values = str(file_data).split('\\n')
+        file_data_values[0] = file_data_values[0].replace('b\'', '')
+        file_data_values.pop()
+        return file_data_values
 
     @staticmethod
     def read_file_data(file: zipfile) -> list:
@@ -63,20 +63,20 @@ class FileHandler:
         return file_data_values
 
     @staticmethod
-    def read_files_data(zip_file: zipfile, extracted_files_list: list) -> list:
+    def read_files_data(zip_file: zipfile, extracted_files: list) -> list:
         """
         Take the extracted_files_list and read the data of each file.
         Parameters
         ----------
         zip_file: zipfile.py
-        extracted_files_list: list
+        extracted_files: list
 
         Returns
         -------
         list: files_data
         """
         files_data = []
-        for filename in extracted_files_list:
+        for filename in extracted_files:
             with zip_file.open(filename) as file:
                 file_data_values = FileHandler.read_file_data(file)
                 for data in file_data_values:
@@ -86,7 +86,7 @@ class FileHandler:
         return files_data
 
     @staticmethod
-    def get_files_data_list(path: str):
+    def get_files_data(path: str) -> list:
         """
         Return the list of data which are read from the all files.
 
@@ -96,13 +96,13 @@ class FileHandler:
 
         Returns
         -------
-        list: files_data_list
+        list: files_data
         """
         try:
             with zipfile.ZipFile(path) as zip_file:
-                extracted_files_list = FileHandler.extract_zipped_files(zip_file.namelist())
-                files_data_list = FileHandler.read_files_data(zip_file, extracted_files_list)
-                return files_data_list
+                extracted_files = FileHandler.extract_zipped_files(zip_file.namelist())
+                files_data = FileHandler.read_files_data(zip_file, extracted_files)
+                return files_data
 
         except zipfile.BadZipFile:
             print('Error: Zip file is corrupted')
